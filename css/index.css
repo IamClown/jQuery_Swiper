@@ -1,0 +1,62 @@
+ /* 清除默认样式 */
+ *{
+    margin: 0;
+    padding: 0;
+}
+.content{
+    width: 800px;
+    height: 500px;
+    margin: 100px auto;
+    position: relative;
+    border: lightsalmon solid 50px;
+    overflow: hidden;
+}
+.swiper{
+    width: 800px;
+    height: 500px;
+    position: absolute;
+}
+.swiper img{
+    height:100%;
+    float: left;
+    width: 800px;
+}
+ul{
+    list-style: none;
+    width: 200px;
+    height: 30px;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.pagination li{
+    float: left;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    margin: 10px;
+    cursor: pointer;
+}
+.pagination li.select{
+    background: #ff6700
+}
+.btnLeft,.btnRight{
+    width: 30px;
+    height: 100px;
+    background: url("../img/icon-slides.png") no-repeat ;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    /* background-size: contain; */
+}
+.btnLeft{
+    background-position: -3px;
+    left: 0;
+}
+.btnRight{
+    background-position: -50px;
+    right: 0;
+}

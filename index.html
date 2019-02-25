@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<div class="content">
+    <div class="swiper">
+    </div>
+    <div class="swiperTemp" style="display:none">
+        <img src="#img#" alt="#desc#">
+    </div>
+    <ul class="pagination">
+    </ul>
+    <div class="btnLeft"></div>
+    <div class="btnRight"></div>
+
+</div>
+
+<body>
+    <script src="js/jquery-1.11.3.js"></script>
+    <script>
+        ; (function ($) {
+            let imgW = null;
+            let step = 1;
+            //通过ajax获取数据
+            $.ajax({
+                type: "get",//请求方式
+                url: "json/banner.json",
+                success: (response) => {
+                    bind_data(response);
+                    $(".pagination li").eq(0).addClass("select");
+                    //实现无缝轮播
+                    $(".swiper").append($("img").eq(0).clone());
+                    $("img").eq(response.length - 1).clone().insertBefore($("img").eq(0));
+                    //获取一张图片的宽度
+                    imgW = $("img")[0].offsetWidth;
+                    $(".swiper")[0].style.width = imgW * $("img").length + "px";
+                    $(".swiper")[0].style.left = -imgW + "px";
+                    //给分页器按钮添加点击事件
+                    $(".pagination li").on("click", function () {
+                        //获取当前点击的这个按钮的索引
+                        let index = $(this).index();
+                        step = index;
+                        paginationTip(step);
+                        autoMove();
+                    })
+                }
+            })
+            //渲染数据
+            function bind_data(data) {
+                //遍历数组
+                $.each(data, function (index, value) {
+                    //获取容器中的内容（获取结果是字符串）
+                    let temp = $(".swiperTemp").html();
+                    temp = temp.replace("#img#", data[index].img);
+                    temp = temp.replace("#desc#", data[index].desc);
+                    //append 类似appendChile和innerHTML的结合
+                    $(".swiper").append(temp);
+                    //添加分页器
+                    $(".pagination").append("<li></li>");
+                })
+            }
+            //定义一个全局变量，来控制图片和分页器的切换
+
+            let timer = setInterval(autoMove, 2000);
+            function autoMove() {
+                step++;
+                if (step === $(".swiper img").length) {
+                    step = 2;
+                    $(".swiper")[0].style.left = -imgW + "px";
+                }
+                $(".swiper").stop().eq(0).animate({ left: -imgW * step + "px" }, 200);
+                // step-1=分页器的索引
+                paginationTip(step - 1);
+            }
+            //@param index分页器的索引
+            function paginationTip(num) {
+                $.each($(".pagination li"), function (index, value) {
+
+                    $(".pagination li").eq(index).removeClass("select");
+                    if (num === index) {
+                        $(".pagination li").eq(num).addClass("select");
+                    }
+                    if (num === 4) {
+                        $(".pagination li").eq(0).addClass("select");
+                    }
+                    if (num === -1) {
+                        $(".pagination li").eq($(".pagination li").length - 1).addClass("select");
+                    }
+                });
+            };
+            //分页器的切换事件
+
+            //左右两边按钮事件
+            $(".btnLeft").on("click", function () {
+                step--;
+                if (step === -1) {
+                    step = 3
+                    $(".swiper").css("left", -3200);
+                }
+                $(".swiper").stop().animate({ left: -imgW * step + "px" }, 200);
+                paginationTip(step - 1);
+            });
+            $(".btnRight").on("click", function () {
+                autoMove();
+            })
+            //鼠标滑入滑出事件
+            $(".content").hover(function () {
+                //鼠标滑入
+                clearInterval(timer);
+            }, function () {
+                //鼠标滑出
+                timer = setInterval(autoMove, 2000);
+            });
+        })(jQuery)
+    </script>
+</body>
+
+</html>
